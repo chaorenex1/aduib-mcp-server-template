@@ -114,7 +114,16 @@ def run_mcp_server(app):
 @contextlib.asynccontextmanager
 async def lifespan(app: AduibAIApp) -> AsyncIterator[None]:
     log.info("Lifespan is starting")
+
     session_manager = app.mcp.session_manager
     if session_manager:
         async with session_manager.run():
             yield
+
+    # Close database connections
+    try:
+        from models.engine import engine
+        engine.dispose()
+        log.info("Database connections closed")
+    except Exception as e:
+        log.error(f"Error closing database connections: {e}")
