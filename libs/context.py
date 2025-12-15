@@ -43,8 +43,8 @@ class ApiKeyContextMiddleware(BaseHTTPMiddleware):
             try:
                 api_key = ApiKeyService.get_by_hash_key(api_key_value)
                 ApiKeyService.validate_api_key(api_key_value)
-                logger.info(f"Using API Key: {api_key}")
-                api_key_context.set(api_key)
+                # logger.info(f"Using API Key: {api_key}")
+                # api_key_context.set(api_key)
             except ApiKeyNotFound:
                 logger.error(f"API Key not found: {api_key_value}")
                 raise ApiNotCurrentlyAvailableError()
@@ -53,18 +53,18 @@ class ApiKeyContextMiddleware(BaseHTTPMiddleware):
                 raise e
 
         response: Response = await call_next(request)
-        api_key_context.clear()
+        # api_key_context.clear()
         return response
 
 class TraceIdContextMiddleware(BaseHTTPMiddleware):
     """Middleware to extract and store Trace ID in request context."""
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
-        trace_id_context.clear()
+        # trace_id_context.clear()
         trace_id = trace_uuid()
         logger.info(f"Using Trace ID: {trace_id}")
         trace_id_context.set(trace_id)
         response: Response = await call_next(request)
-        trace_id_context.clear()
+        # trace_id_context.clear()
         return response
 
 
